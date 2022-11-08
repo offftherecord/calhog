@@ -281,16 +281,11 @@ func request(url string) Response {
 }
 
 func report(f Finding) {
-	switch f.Type {
-	case "zoom":
-		fmt.Printf("[zoom] [%s] %s || %s\n", f.Date, f.Summary, f.ZoomLink)
-	case "hangouts":
-		fmt.Printf("[hangouts] [%s] %s || %s\n", f.Date, f.Summary, f.HangoutLink)
-	case "attachment":
-		fmt.Printf("[attachement] [%s] %s || %s\n", f.Date, f.Title, f.AttachmentLink)
-	case "email":
-		fmt.Printf("[email] %s\n", f.Email)
+	l, err := json.Marshal(&f)
+	if err != nil {
+		fmt.Println(err)
 	}
+	fmt.Println(string(l))
 }
 
 func main() {
