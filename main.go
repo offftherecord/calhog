@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -281,14 +282,32 @@ func request(url string) Response {
 }
 
 func report(f Finding) {
-	l, err := json.Marshal(&f)
-	if err != nil {
-		fmt.Println(err)
+	if *jsflag {
+		l, err := json.Marshal(&f)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(string(l))
+	} else {
+		switch f.Type {
+		case "email":
+			fmt.Println("[email] " + f.Email)
+		case "hangout":
+			fmt.Println("[hangout] " + f.HangoutLink)
+		case "attachment":
+			fmt.Println("[attachement] " + f.AttachmentLink)
+		case "zoom":
+			fmt.Println("[zoom] " + f.ZoomLink)
+		}
 	}
-	fmt.Println(string(l))
 }
 
+var jsflag *bool
+
 func main() {
+	jsflag = flag.Bool("json", false, "display json output")
+	flag.Parse()
+
 	key := "AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs" // Auto generated from Google
 	pageToken := ""
 	gcalAPI := "https://www.googleapis.com/calendar/v3/calendars/%s/events?singleEvents=true&&maxAttendees=1000&maxResults=2500&sanitizeHtml=true&key=%s"
